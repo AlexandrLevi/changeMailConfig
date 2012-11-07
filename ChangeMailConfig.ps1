@@ -1,5 +1,5 @@
 ﻿$curDir = $MyInvocation.MyCommand.Definition | split-path -parent
-$xml = [xml](get-content "$curDir\Vesta_Arc_conf.xml")
+$xml = [xml](get-content "$curDir\cmconf.xml")
 $ConnectionUri = $xml.config.ConnectionUri
 $SearchOU = $xml.config.SearchOU
 $mailserver = $xml.config.mailserver# Сервер с которого будет отпраляться почта. 
@@ -9,14 +9,14 @@ $mailUser = $xml.config.mailUser
 $mailUserPassword = $xml.config.mailUserPassword
 $archiveDatabase = $xml.config.archivedatabase
 $defaultsendsize = $xml.config.defaultsendsize
-$defaultresiavesize = $xml.defaultresiavesize
+$defaultresiavesize = $xml.config.defaultresiavesize
 
 # Подключаем оснастку ActiveDirectory . Данная команда работает на WS2008 и W7
 import-module activedirectory -Cmdlet get-adgroup, get-aduser
 
 # Подключаем сеанс Exchange 
 $session = New-PSSession -Configurationname Microsoft.Exchange –ConnectionUri $ConnectionUri
-Import-PSSession $session -AllowClobber -commandname Get-User, Get-Group, Enable-Mailbox, Get-CASMailbox, Set-CASMailbox
+Import-PSSession $session -AllowClobber -commandname Get-User, Get-Group, Enable-Mailbox, Get-CASMailbox, Set-CASMailbox, Get-MailBox, Set-Mailbox
 
 # Создаем сеанс для отправки почты.
 $SmtpClient = New-object system.net.mail.SmtpClient 
@@ -72,7 +72,7 @@ $ImapEnabledGroupMembers = (Get-Group -Identity "ImapEnabled").Members
 $allmailboxes = Get-Mailbox -OrganizationalUnit $SearchOU 
 Foreach ($usermailbox in $allmailboxes) 
 	{
-	If (ArchiveDatabase -eq $null)
+	If ($usermailbox.ArchiveDatabase -eq $null)
 		{
 		Enable-Mailbox -Identity $usermailbox.Identity -Archive -ArchiveDatabase $archiveDatabase
 		}
@@ -149,7 +149,7 @@ Foreach ($usermailbox in $allmailboxes)
 		{																									# проверяем отличие лимита от настроек по умолчанию
 		If ($usermailbox.MaxReceiveSize -notmatch ("$defaultresiavesize" + " MB"))							#
 			{																								# 
-			Set-Mailbox -Identity $usermailbox -MaxReceiveSize $defaultresiavesize							# если настройки не верные - задаем лимит по умолчанию
+			Set-Mailbox -Identity $usermailbox.Identity -MaxReceiveSize ("$defaultresiavesize" + " MB")		# если настройки не верные - задаем лимит по умолчанию
 			}																								#
 		}																									# 
 	if ($AllSendLimitGroups.Count -eq 1)																	# Если есть 1-на группа
@@ -157,7 +157,7 @@ Foreach ($usermailbox in $allmailboxes)
 		$maxReceveLimit = (Get-ADGroup $AllSendLimitGroups[0]).name -replace "ReceiveLimit_",""				# выделяем из её названия число - размер ограничения
 		If ($usermailbox.MaxReceiveSize -notmatch ("$maxReceveLimit" + " MB"))								# проверяем соответствие установленного лимита и указанного ограничения
 			{																								#
-			Set-Mailbox -Identity $usermailbox -MaxReceiveSize $maxReceveLimit								# если значения не соответствуют - перезаписываем его
+			Set-Mailbox -Identity $usermailbox.Identity -MaxReceiveSize ("$maxReceveLimit" + " MB")			# если значения не соответствуют - перезаписываем его
 			}																								#
 		}																									#
  	if ($AllSendLimitGroups.Count -gt 1)																	# Если групп больше одной - пока не знаю что делать.
@@ -171,15 +171,15 @@ Foreach ($usermailbox in $allmailboxes)
 		{																									# проверяем отличие лимита от настроек по умолчанию
 		If ($usermailbox.MaxReceiveSize -notmatch ("$defaultsendsize" + " MB"))								#
 			{																								# 
-			Set-Mailbox -Identity $usermailbox -MaxReceiveSize $defaultsendsize								# если настройки не верные - задаем лимит по умолчанию
+			Set-Mailbox -Identity $usermailbox.Identity -MaxSendSize ("$defaultsendsize" + " MB")			# если настройки не верные - задаем лимит по умолчанию
 			}																								#
 		}																									# 
 	if ($AllSendLimitGroups.Count -eq 1)																	# Если есть 1-на группа
 		{																									# 
 		$maxSendLimit = (Get-ADGroup $AllSendLimitGroups[0]).name -replace "SendLimit_",""					# выделяем из её названия число - размер ограничения
-		If ($usermailbox.MaxReceiveSize -notmatch ("$maxReceveLimit" + " MB"))								# проверяем соответствие установленного лимита и указанного ограничения
+		If ($usermailbox.MaxReceiveSize -notmatch ("$maxSendLimit" + " MB"))								# проверяем соответствие установленного лимита и указанного ограничения
 			{																								#
-			Set-Mailbox -Identity $usermailbox -MaxReceiveSize $maxSendLimit								# если значения не соответствуют - перезаписываем его
+			Set-Mailbox -Identity $usermailbox.Identity -MaxSendSize ("$maxSendLimit" + " MB")			# если значения не соответствуют - перезаписываем его
 			}																								#
 		}																									#
  	if ($AllSendLimitGroups.Count -gt 1)																	# Если групп больше одной - пока не знаю что делать.

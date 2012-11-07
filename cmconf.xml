@@ -1,0 +1,12 @@
+<config>
+	<ConnectionUri>http://rgmail01.reg.vesta-trading.com/powershell</ConnectionUri> <!-- Путь подключения к серверу Exchange-->
+	<mailserver>spmail30.vesta-trading.com</mailserver> <!-- Почтовый сервер для отправки отчетов-->
+	<mailrecepient>LeviAA@v-tg.com</mailrecepient> <!-- Почтовый адресс получателя отчетов-->
+	<Mailsender>adminmailuser@v-tg.com</Mailsender> <!-- Почтовый адресс отправителя отчетов-->
+	<mailUser>vesta\AdminMailUser</mailUser> <!-- Учетные данные отправителя отчетов-->
+	<mailUserPassword>Ssukin5#</mailUserPassword> <!-- Пароль отправителя отчетов-->
+	<SearchOU>OU=Номера,OU=Удаленные,DC=reg,DC=vesta-trading,DC=com</SearchOU> <!-- OU пользователей-->
+	<archiveDatabase>"MSK Archive"</archiveDatabase><!--Имя базы хранения архивных почтовых ящиков-->
+	<defaultsendsize>10</defaultsendsize><!--Лимит по отправке писем по умолчанию-->
+	<defaultresiavesize>30</defaultresiavesize><!--Лимит по приему писем по умолчанию-->
+</config>
