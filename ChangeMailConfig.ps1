@@ -47,18 +47,18 @@ Function SendMailMessage
 
 # Функция установки индивидуальных лимитов на размер отправляемого и получаемого письма. Вход $usermailbox - почтовый ящик пользователя
 # $SendLimit - лимит на размер отправляемого сообщения (число в Мб), $Resivelimit - лимит на размер получаемого сообщения (число в Мб)
-Function ChangeSendReciveLimit
-	{
-	Praram($usermailbox = $null,$SendLimit = $defaultsendsize,$Resivelimit = $defaultresiavesize)
-	If ($usermailbox.MaxSendSize -notmatch ("$SendLimit" + " MB"))
-		{
-		Set-Mailbox -Identity $usermailbox -MaxSendSize $SendLimit
-		}
-	If ($usermailbox.MaxReceiveSize -notmatch ("$Resivelimit" + " MB"))
-		{
-		Set-Mailbox -Identity $usermailbox -MaxReceiveSize $Resivelimit
-		}
-	}
+#Function ChangeSendReciveLimit
+#	{
+#	Praram($usermailbox = $null,$SendLimit = $defaultsendsize,$Resivelimit = $defaultresiavesize)
+#	If ($usermailbox.MaxSendSize -notmatch ("$SendLimit" + " MB"))
+#		{
+#		Set-Mailbox -Identity $usermailbox -MaxSendSize $SendLimit
+#		}
+#	If ($usermailbox.MaxReceiveSize -notmatch ("$Resivelimit" + " MB"))
+#		{
+#		Set-Mailbox -Identity $usermailbox -MaxReceiveSize $Resivelimit
+#		}
+#	}
 
 # Полчаем участников всех групп разрешения почтовых функций.
 $AllCasMailFutures = Get-CASMailbox -OrganizationalUnit $SearchOU 
