@@ -8,5 +8,5 @@
 	<SearchOU>OU=Номера,OU=Удаленные,DC=reg,DC=vesta-trading,DC=com</SearchOU> <!-- OU пользователей-->
 	<archiveDatabase>"MSK Archive"</archiveDatabase><!--Имя базы хранения архивных почтовых ящиков-->
 	<defaultsendsize>10</defaultsendsize><!--Лимит по отправке писем по умолчанию-->
-	<defaultresiavesize>30</defaultresiavesize><!--Лимит по приему писем по умолчанию-->
+	<defaultreceivesize>30</defaultreceivesize><!--Лимит по приему писем по умолчанию-->
 </config>
